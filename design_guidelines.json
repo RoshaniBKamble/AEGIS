@@ -1,0 +1,103 @@
+{
+  "project_name": "AEGIS — Personal AI Agent & Governance Control Center",
+  "archetype": "ARCHETYPE 7: ELECTRIC & NEON (Web3 Private Inference & Human Proof)",
+  "theme": {
+    "mode": "dark",
+    "background_base": "#05070F",
+    "surface_card": "rgba(11, 15, 28, 0.7)",
+    "surface_card_border": "rgba(0, 102, 255, 0.2)",
+    "glass_overlay": "rgba(5, 7, 15, 0.75)",
+    "glass_backdrop_blur": "backdrop-blur-xl",
+    "colors": {
+      "void_black": "#03040A",
+      "obsidian_bg": "#070913",
+      "surface_elevated": "#0D1122",
+      "surface_border": "#1A233D",
+      "electric_blue": "#0066FF",
+      "electric_blue_glow": "rgba(0, 102, 255, 0.4)",
+      "hyper_violet": "#8B5CF6",
+      "hyper_violet_glow": "rgba(139, 92, 246, 0.4)",
+      "cyber_cyan": "#06B6D4",
+      "cyber_cyan_glow": "rgba(6, 182, 212, 0.3)",
+      "emerald_verified": "#10B981",
+      "amber_warning": "#F59E0B",
+      "crimson_denied": "#EF4444",
+      "text_primary": "#F8FAFC",
+      "text_secondary": "#94A3B8",
+      "text_muted": "#64748B"
+    }
+  },
+  "typography": {
+    "header_font": "'Unbounded', 'Orbitron', 'Cabinet Grotesk', sans-serif",
+    "body_font": "'Inter', 'Geist', sans-serif",
+    "mono_font": "'JetBrains Mono', 'Fira Code', monospace",
+    "hierarchy": {
+      "h1_hero": "text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-none",
+      "h2_section": "text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight",
+      "h3_subtitle": "text-xl sm:text-2xl font-semibold tracking-normal",
+      "card_title": "text-lg sm:text-xl font-medium",
+      "body_text": "text-sm sm:text-base leading-relaxed text-slate-300",
+      "mono_caption": "text-xs font-mono tracking-wider uppercase text-cyan-400"
+    }
+  },
+  "layout_and_spacing": {
+    "hero_layout": "Full viewport height with dynamic particle mesh canvas, glowing floating card, and dual CTAs",
+    "dashboard_grid": "grid-cols-1 lg:grid-cols-12 gap-6 min-h-[calc(100vh-4rem)] p-4 sm:p-6 lg:p-8",
+    "sidebar_span": "lg:col-span-3 space-y-4",
+    "main_chat_span": "lg:col-span-6 flex flex-col h-[750px] border border-cyan-500/20 rounded-2xl bg-slate-950/60 backdrop-blur-xl shadow-2xl overflow-hidden",
+    "audit_panel_span": "lg:col-span-3 space-y-4",
+    "modal_backdrop": "fixed inset-0 z-50 bg-black/80 backdrop-blur-2xl flex items-center justify-center p-4",
+    "modal_content": "relative w-full max-w-xl bg-slate-950/90 border border-violet-500/40 rounded-3xl p-8 shadow-[0_0_80px_rgba(139,92,246,0.3)] overflow-hidden"
+  },
+  "key_features_design_map": {
+    "landing_hero": {
+      "title": "Your AI. Under Your Control.",
+      "tagline": "0G Verified Private Compute × World ID Biometric Governance",
+      "bg_effect": "3D-style animated Canvas particles/neural mesh with reactive mouse glowing orb",
+      "cta": "Launch Agent Command Center"
+    },
+    "agent_console": {
+      "left_sidebar": "Agent ID badge, TEE Status indicator, Current Autonomy Mode selector, World ID verification indicator, active compute node hash",
+      "chat_canvas": "Message feed with explicit 0G private inference badge, real-time typing state, simulated request IDs, and live thinking indicators",
+      "human_gate_trigger": "High-risk actions (e.g., wallet transfers, contract deployment, private key access) trigger the World ID modal directly from chat"
+    },
+    "world_id_modal": {
+      "archetype": "The Emotional Peak of the Product",
+      "visuals": "Orbicular biometric scanner animation, glowing radial rings, dark crystal backdrop",
+      "action_paths": [
+        "Approve (Simulated Orb Iris Scan success with green particle burst)",
+        "Deny (User rejects request with red glow & cancellation rationale)",
+        "Cancel (Aborts modal without executing policy)",
+        "Expiry Countdown (15-second timer with circular progress bar that triggers auto-abort on timeout)"
+      ]
+    },
+    "autonomy_policy_editor": {
+      "layout": "Interactive matrix for low, medium, and high-risk action categories",
+      "toggles": "Instant Auto-Approve, Require World ID Human Gate, Always Deny",
+      "visuals": "Linear-style slider switches, active risk badge indicators, live policy hash calculator"
+    },
+    "audit_log_timeline": {
+      "layout": "Vertical stream with crisp 0G proof links, status badges, timestamping, and verification path (Auto vs Human Verified)",
+      "filter_chips": ["All Events", "World ID Verified", "0G Inferences", "Blocked Actions"]
+    },
+    "settings_and_identity": {
+      "layout": "Tabbed configuration panel for Profile, World ID Zero-Knowledge Proof status, 0G Node Endpoint, and Cryptographic Keys"
+    }
+  },
+  "image_urls": {
+    "neural_bg_1": "https://images.unsplash.com/photo-1644088379091-d574269d422f?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "neural_bg_2": "https://images.unsplash.com/photo-1674027444485-cec3da58eef4?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "biometric_iris": "https://images.unsplash.com/photo-1788128496155-89679250dcf6?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "circuit_board": "https://images.unsplash.com/photo-1727434032773-af3cd98375ba?crop=entropy&cs=srgb&fm=jpg&q=85"
+  },
+  "micro_interactions": {
+    "tracing_beam": "Hovering over governance cards highlights a subtle 1px gradient tracing line around the container border",
+    "button_press": "Framer motion scale-95 tap effects with instant neon shadow glow expansion",
+    "og_thinking_indicator": "Pulsing cyan-violet dual ring animation with monospace request hash stream",
+    "toast_notifications": "Sonner dark glass toast notifications anchored bottom-right for human proof verifications"
+  },
+  "testing_and_accessibility": {
+    "data_testid_policy": "All interactive elements, buttons, tabs, inputs, policy toggles, modal triggers, and status badges MUST include explicit kebab-case data-testid attributes (e.g. data-testid='launch-agent-btn', data-testid='world-id-approve-btn', data-testid='autonomy-rule-toggle-transfer')",
+    "contrast": "All text elements satisfy minimum 4.5:1 contrast against dark background layers using text-slate-100 or text-cyan-300 on #05070F."
+  }
+}
