@@ -1,0 +1,43 @@
+{
+  "summary": "First full test run of AEGIS (React CRA + FastAPI). Backend: 11/11 pytest pass (health, /api/zerog/status, /api/agent/think SSE plain + action extraction + follow-up events, 422 validation, /api/worldid/verify valid/0xdead/missing fields). Frontend at 1920px: landing headline + Launch Agent works; console empty state, suggestions, composer, thinking indicator, streaming reply, inference badge with a 0g-req id and expandable details all work. Human Gate: approve (scan, verified, close, 'World ID verified · executed' + follow-up), deny ('Denied by human' + abort reply), cancel button, X button and Escape ('Verification cancelled'), simulate invalid proof ('Verification failed.' -> 'Proof rejected'), and expiry with a 15s timeout ('Verification expired') all work. Read-only lookup is auto-approved with no modal. Blocking transaction+payment gives 'Blocked by policy' with no modal. A critical irreversible action is still gated under Operator. The policy page works: presets change the sidebar mode, rules switch to Custom, irreversible-auto is disabled, the simulator updates and the policy hash changes. Audit filters, empty state and JSON export work. Identity page works: profile persists, World ID toggle syncs to the sidebar, 0G shows Connected, verification history shows items, wipe clears data. Messages and audit log persist after reload. ONE HIGH BUG: route transitions in AppShell sometimes get stuck. After using the Policy page (reliably after clicking a preset), clicking another sidebar nav link changes the URL but the main area stays blank or blurred and the new page never mounts.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/worldid/verify", "issue": "No nullifier single-use enforcement, and any proof not starting with 0xdead is accepted. Expected for demo mode but worth noting."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "AppShell route transition (components/AppShell.jsx lines 78-84: AnimatePresence mode='wait' keyed by location.pathname)", "issue": "Navigation gets stuck and the page stays blank. Repro: open /app/policy, click policy-preset-balanced (or any preset), wait 1.5s, click nav-console. The URL becomes /app but the Policy subtree never finishes exiting and Console never mounts: a blank or blurred main area, composer-input never appears, and only a full reload recovers. Reproduced 3 times. It also happened once after clicking policy-rule-transaction-deny and policy-rule-payment-deny, then nav-console. Likely cause: the exiting subtree has shared-layout motion elements (layoutId='preset-glow' in Policy.jsx Presets, and nav-glow in the sidebar), and these stop framer-motion 11.18 AnimatePresence mode='wait' from completing the exit.", "selector": "[data-testid='nav-console'] after [data-testid='policy-preset-balanced']", "priority": "HIGH"},
+      {"component": "Identity wipe", "issue": "identity-wipe-btn wipes all messages, audit, policy and profile immediately with no confirmation step (no AlertDialog). This is destructive and irreversible.", "selector": "[data-testid='identity-wipe-btn']", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Audit log timeline", "issues": ["The timestamp column is too narrow: '02:27:2' is clipped (seconds cut off) and 'PM' wraps to its own line. Widen the column or use whitespace-nowrap or a shorter format.", "Switching filters plays overlapping layout animations, so entries briefly overlap each other."]},
+      {"screen": "Console mobile (390px)", "issues": ["The suggestion rows are cramped: the category label column takes up the width, so the suggestion text wraps one word per line. Stack the label above the text on mobile."]},
+      {"screen": "Console", "issues": ["When the last message's inference-badge details are expanded, the panel opens under the composer and the list does not scroll it into view."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_aegis_api.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "HIGH: Fix the stuck route transition in AppShell.jsx. Options: drop mode='wait' (or use mode='popLayout'), or wrap with LayoutGroup, or replace the motion.span layoutId='preset-glow' in Policy.jsx (and possibly nav-glow) with plain elements. Re-verify: click a preset on /app/policy, then click nav-console; the Console must render.",
+    "Add a confirmation dialog (shadcn AlertDialog) before identity-wipe-btn clears all local data.",
+    "Fix the clipped timestamps in the Audit timeline (column width / whitespace-nowrap).",
+    "Improve the layout of the mobile suggestion rows."
+  ],
+  "critical_code_review_comments": [
+    "AegisContext.handleAction and resolveGate call runInference(messagesRef.current, ...) right after patchMessage. messagesRef only updates in a useEffect after render, so the history sent to the LLM can still show the old action status (or none). The event prompt covers this, but the transcript is stale.",
+    "HumanGateModal: if policy.gateTimeout changes while a gate is open, the timeout prop changes but `left` does not reset, so the progress ratio is off. Minor.",
+    "runInference is a useCallback with an empty deps array (eslint-disabled) and calls handleAction from the first render's closure. This works today only because everything goes through refs or stable setters, so it is fragile.",
+    "The composer textarea stays enabled while the agent is busy (only the send button is disabled). This is fine, but Enter-to-send should also respect busy (not verified).",
+    "Unlinking World ID on the Identity page does not change gating behaviour. Consider blocking gate approval when World ID is not linked."
+  ],
+  "updated_files": ["/app/backend/tests/test_aegis_api.py"],
+  "success_rate": {"backend": "100%", "frontend": "92% (all requested flows pass; nav transition bug intermittent/high)"},
+  "test_credentials": "No auth in app; /app/memory/test_credentials.md is empty placeholder (expected).",
+  "seed_data_creation": "None. All data is browser-local (IndexedDB/localStorage) in ephemeral Playwright contexts.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Each browser_automation call starts a fresh browser context, so test persistence with page.reload() inside the same script. Testid indexes for message-agent-N and action-card-N use the message's index in the list (user=0, agent=1, follow-up=2...). The LLM categorises the ETH transfer as 'payment' (so Guardian gates it). Radix slider: focus [role=slider] and press Home to get 15s. Use page.goto rather than sidebar nav after policy edits until the AnimatePresence bug is fixed. The landing-to-/app transition was fine on retest (an early screenshot that showed a shifted sidebar was mid-animation and did not reproduce).",
+  "rca of the issue": "Stuck navigation: AppShell wraps the outlet in <AnimatePresence mode='wait'> keyed by pathname. In mode='wait' the next route mounts only after the exiting child's exit animation completes. The Policy page contains a shared-layout element (motion.span layoutId='preset-glow'), and the sidebar NavLink's layoutId='nav-glow' moves at the same moment. In framer-motion 11 the shared-layout projection can stop the exit-complete callback from firing, so the old route stays in the DOM, faded and blurred, forever. Repro: /app/policy, click policy-preset-balanced, wait 1.5s, click nav-console. Result: URL is /app, the main area is blank, and document.querySelector('[data-testid=composer-input]') is null indefinitely."
+}
